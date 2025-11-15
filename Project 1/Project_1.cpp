@@ -5,6 +5,13 @@
 
 using namespace std;
 
+
+
+struct stGamePlayerData
+{
+  short PlayerInput = 0, ComputerInput = 0;
+  short PlayerPoints = 0, ComputerPoints = 0, DrawTimes = 0;
+};
 enum enWinnerIs
 {
   NoWinner = 0,
@@ -28,7 +35,7 @@ int ReadNumberInRange(string Message, int From, int To)
   } while (Number < From || Number > To);
   return Number;
 }
-char ReadCharY_Or_N()
+char AskAboutAgainGame()
 {
   char DoYouWantToPlayAgain;
   do
@@ -53,11 +60,6 @@ int RandomNumber(int From, int To)
   int randNum = rand() % (To - From + 1) + From;
   return randNum;
 }
-struct stGamePlayerData
-{
-  short PlayerInput = 0, ComputerInput = 0;
-  short PlayerPoints = 0, ComputerPoints = 0, DrawTimes = 0;
-};
 
 stGamePlayerData ReadPlayersChoices()
 {
@@ -75,26 +77,16 @@ stGamePlayerData ReadPlayersChoices()
   return GamePlayersData;
 }
 
-/*
-bool DidPlayerWin(stGamePlayerData GamePlayersData)
-{
-
-  if (Gam)
-}
-*/
 
 short HowIsWinner(stGamePlayerData GamePlayersData)
 {
 
   short PlayerChoice = GamePlayersData.PlayerInput;
   short ComputerChoice = GamePlayersData.ComputerInput;
-
   if (PlayerChoice == ComputerChoice)
   {
-
     return enWinnerIs::NoWinner;
   }
-
   else if ((PlayerChoice == enChoice::Stone &&
             ComputerChoice == enChoice::Scissors) ||
            (PlayerChoice == enChoice::Scissors &&
@@ -102,10 +94,8 @@ short HowIsWinner(stGamePlayerData GamePlayersData)
            (PlayerChoice == enChoice::Paper &&
             ComputerChoice == enChoice::Stone))
   {
-
     return enWinnerIs::Player;
   }
-
   else
   {
 
@@ -139,17 +129,25 @@ void PrintPlayersChoices(stGamePlayerData GamePlayersData)
     cout << "Computer Choice: Scissors\n";
   }
 
-  // Print RoundPlayer
+  // Print RoundWinner
   if (HowIsWinner(GamePlayersData) == enWinnerIs::Player)
-    cout << "Round Winner   : [Player]" << endl;
+  {
+    cout << "\033[42mRound Winner   : [Player]\033[0m\n" << endl;
+
+  }
   else if (HowIsWinner(GamePlayersData) == enWinnerIs::Computer)
-    cout << "Round Winner   : [Computer]" << endl;
+  {
+    cout << "\033[41mRound Winner   : [Computer]\033[0m\n\a" << endl;
+
+   
+  }
   else
   {
-    cout << "Round Winner   : [No Winner]" << endl;
-  } /*  */
+      cout << "\033[43mRound Winner   : [No Winner]\033[0m\n" << endl;
+
+  }
 }
-short CountPoints(stGamePlayerData &GamePlayersData, short HowIsWinner)
+short CountPoints(stGamePlayerData &GamePlayersData, short &HowIsWinner)
 {
 
   if (HowIsWinner == enWinnerIs::Player)
@@ -169,7 +167,7 @@ short CountPoints(stGamePlayerData &GamePlayersData, short HowIsWinner)
   return 0;
 }
 
-void StartRound(short &Rounds, stGamePlayerData &RoundData)
+void StartRound(short &Rounds, stGamePlayerData &RoundData,stGamePlayerData &GamePlayersData)
 {
   Rounds = AskAboutRounds();
 
@@ -184,6 +182,10 @@ void StartRound(short &Rounds, stGamePlayerData &RoundData)
     PrintPlayersChoices(RoundData);
 
     cout << "__________________________________________________\n\n";
+    
+    short RoundWinner = HowIsWinner(RoundData);
+    CountPoints(GamePlayersData, RoundWinner);
+    
   }
 }
 
@@ -197,21 +199,20 @@ string AddLines()
   return "________________________________________________________________________________________";
 }
 
-string FinalWinnerIs(stGamePlayerData &RoundData)
+string FinalWinnerIs(stGamePlayerData &GamePlayersData)
 {
-  if (RoundData.ComputerPoints == RoundData.PlayerPoints)
-    return "NoWinner";
-  else if (RoundData.ComputerPoints < RoundData.PlayerInput)
-    return "Player";
-
-  return "Computer";
+  if (GamePlayersData.ComputerPoints == GamePlayersData.PlayerPoints)
+    return "\033[43mNoWinner\033[0m";
+  else if (GamePlayersData.PlayerPoints > GamePlayersData.ComputerPoints)
+    return "\033[42mPlayer\033[0m";
+  else
+  return "\033[41mComputer\033[0m\a";
 }
 
-void ShowGameOver(stGamePlayerData &GamePlayersData, stGamePlayerData &RoundData, short &Rounds, char PlayAgain)
+void ShowGameOver(stGamePlayerData &GamePlayersData, short &Rounds)
 {
 
-  short RoundWinner = HowIsWinner(RoundData);
-  CountPoints(GamePlayersData, RoundWinner);
+  
 
   cout << AddTabs();
   cout << AddLines();
@@ -239,7 +240,7 @@ void ShowGameOver(stGamePlayerData &GamePlayersData, stGamePlayerData &RoundData
   cout << AddTabs() << "Player won times   : " << GamePlayersData.PlayerPoints << endl;
   cout << AddTabs() << "Computer won times : " << GamePlayersData.ComputerPoints << endl;
   cout << AddTabs() << "Draw times         : " << GamePlayersData.DrawTimes << endl;
-  string FinalWinner = FinalWinnerIs(RoundData);
+  string FinalWinner = FinalWinnerIs(GamePlayersData);
   cout << AddTabs() << "Final Winner       : " << FinalWinner << endl;
 
   cout << AddTabs();
@@ -249,29 +250,24 @@ void ShowGameOver(stGamePlayerData &GamePlayersData, stGamePlayerData &RoundData
        << endl;
 
   cout << AddTabs();
-  cout << PlayAgain << AddTabs() << endl;
 }
 
 void StartGame()
 {
-  stGamePlayerData RoundData;
-  short Rounds = 0;
-  // Rounds = AskAboutRounds();
-  stGamePlayerData GamePlayersData;
-  StartRound(Rounds, RoundData);
-  char PlayAgain = ReadCharY_Or_N();
-  ShowGameOver(GamePlayersData, RoundData, Rounds, PlayAgain);
-  // StartAgain(PlayAgain);
+  char PlayAgain;
+  do {
+    stGamePlayerData RoundData;
+    short Rounds = 0;
+    // Rounds = AskAboutRounds();
+    stGamePlayerData GamePlayersData;
+    StartRound(Rounds, RoundData,GamePlayersData);
+    ShowGameOver(GamePlayersData, Rounds);
+    PlayAgain = AskAboutAgainGame();
+  }while (PlayAgain == 'Y' || PlayAgain == 'y');
+
 }
 
-void StartAgain(char PlayAgain)
-{
 
-  if (PlayAgain == 'Y' || PlayAgain == 'y')
-  {
-    StartGame();
-  }
-}
 
 int main()
 {
