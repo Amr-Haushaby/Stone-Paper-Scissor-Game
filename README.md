@@ -8,8 +8,15 @@ This project is part of the [AbouHadhood Platform](https://programmingadvices.co
 - Conditional statements
 - Loops
 - Random number generation
-- Functions
-- User input & console interaction
+- Single Responsibility Principle (SRP)
+
+---
+
+## 🛠 Built With
+- **C++**
+- `<iostream>`
+- `<cstdlib>` (for random number generation)
+- `<ctime>` (for seeding the random function)
 
 ---
 
@@ -28,10 +35,3 @@ Result: You Win ✅
 
 ---
 
-## 🛠 Built With
-- **C++**
-- `<iostream>`
-- `<cstdlib>` (for random number generation)
-- `<ctime>` (for seeding the random function)
-
----
