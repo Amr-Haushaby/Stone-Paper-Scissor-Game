@@ -5,7 +5,7 @@
 
 using namespace std;
 
-555
+
 
 struct stGamePlayerData
 {
