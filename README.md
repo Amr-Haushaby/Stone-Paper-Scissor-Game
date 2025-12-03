@@ -31,7 +31,7 @@ Enter: <kbd>1</kbd>
 You chose: Stone  
 Computer chose: Scissor  
 
-Result: You Win ✅
+Result: You Win ✅ 
 
 ---
 
