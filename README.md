@@ -10,6 +10,8 @@ This project is part of the [AbouHadhood Platform](https://programmingadvices.co
 - Random number generation
 - Single Responsibility Principle (SRP)
 
+👉 [Watch Project Video](https://amr-haushaby.de/projects-videos-file/videospage#project-1-title)
+
 ---
 
 ## 🛠 Built With
